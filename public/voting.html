@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Activity Voting</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            background-color: #f0f8ff; /* Light blue background */
+        }
+
+        h1 {
+            text-align: center;
+            color: #228b22; /* Forest green heading color */
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            padding: 8px 12px;
+            background-color: #228b22; /* Forest green button color */
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
+            width: auto;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #006400; /* Dark green button color on hover */
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            width: 100%;
+            max-width: 400px; /* Adjust the max-width as needed */
+        }
+
+        li {
+            display: flex;
+            flex-wrap: wrap; /* Allow the text to wrap to the next line */
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff; /* White background for each activity */
+            transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
+        }
+
+        li:hover {
+            background-color: #f0e68c; /* Khaki background on hover */
+        }
+
+        .activity-text {
+            flex: 1; /* Take up remaining space */
+            margin-right: 10px; /* Add some spacing between text and buttons */
+        }
+
+        .total-score {
+            font-weight: bold;
+            color: #dc143c; /* Crimson red total score color */
+        }
+
+        button {
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 10px;
+            background-color: #dc143c; /* Crimson red button color */
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
+            flex: 0 0 auto; /* Ensure buttons don't grow and maintain their size */
+        }
+
+        button:hover {
+            background-color: #8b0000; /* Dark red button color on hover */
+        }
+
+        .disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Christmas Activity Voting</h1>
+
+<form id="activityForm">
+    <label for="newActivity">New Activity:</label>
+    <input type="text" id="newActivity" name="newActivity" required>
+    <input type="submit" value="Submit">
+</form>
+
+<ul id="activityList">
+    <!-- Activities will be dynamically added here -->
+</ul>
+
+<script>
+    const activities = [
+        { id: 1, name: 'Decorate the Christmas Tree', points: { 3: [], 2: [], 1: [] }, totalScore: 0 },
+        { id: 2, name: 'Bake Holiday Cookies', points: { 3: [], 2: [], 1: [] }, totalScore: 0 },
+        { id: 3, name: 'Watch a Christmas Movie', points: { 3: [], 2: [], 1: [] }, totalScore: 0 },
+        // Add more activities as needed
+    ];
+
+    const userVotes = {};
+
+    function createListItem(activity, userId) {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `
+            <span class="activity-text">${activity.name}</span>
+            <span class="total-score">Total Score: ${activity.totalScore}</span>
+            <button>3</button>
+            <button>2</button>
+            <button>1</button>
+        `;
+        return listItem;
+    }
+    
+    function addNewActivity(activityName, userId) {
+        const newActivity = {
+            id: activities.length + 1,
+            name: activityName,
+            points: { 3: [], 2: [], 1: [] },
+            totalScore: 0
+        };
+        activities.push(newActivity);
+
+        const listItem = createListItem(newActivity, userId);
+        activityList.appendChild(listItem);
+    }
+
+    const activityList = document.getElementById('activityList');
+    activities.forEach(activity => {
+        const listItem = createListItem(activity);
+        activityList.appendChild(listItem);
+    });
+
+</script>
+
+</body>
+</html>

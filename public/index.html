@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+            background-color: #f0f8ff; /* Light blue background */
+        }
+
+        h1 {
+            text-align: center;
+            color: #228b22; /* Forest green heading color */
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px; /* Adjust the max-width as needed */
+            background-color: #fff; /* White background for the form */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
+        }
+
+        form:hover {
+            background-color: #f0e68c; /* Khaki background on hover */
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #228b22; /* Forest green label color */
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            cursor: pointer;
+            padding: 8px 12px;
+            background-color: #228b22; /* Forest green button color */
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
+            width: auto;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #006400; /* Dark green button color on hover */
+        }
+
+        .error-message {
+            color: #dc143c; /* Crimson red error message color */
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Login Page</h1>
+
+<form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <input type="submit" value="Login">
+    <p class="error-message" id="errorMessage"></p>
+</form>
+
+<script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMessageElement = document.getElementById('errorMessage');
+
+    loginForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // You can add your authentication logic here
+        // For simplicity, let's check for a hardcoded username and password
+        if (username === 'user123' && password === 'password123') {
+            // Authentication successful
+            errorMessageElement.textContent = '';
+            // Redirect to the Christmas Activity Voting page
+            window.location.href = 'voting.html';
+        } else {
+            // Authentication failed
+            errorMessageElement.textContent = 'Invalid username or password. Please try again.';
+        }
+
+        const res = await fetch('/', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        })
+
+        if(res.redirected){
+            window.location.href = res.url
+        }
+        return;
+    });
+</script>
+
+</body>
+</html>
