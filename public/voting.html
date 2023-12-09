@@ -119,6 +119,10 @@
 </ul>
 
 <script>
+    const username = localStorage.getItem('username')
+    const password = localStorage.getItem('password')
+    authenticate()
+
     const activities = [
         { id: 1, name: 'Decorate the Christmas Tree', points: { 3: [], 2: [], 1: [] }, totalScore: 0 },
         { id: 2, name: 'Bake Holiday Cookies', points: { 3: [], 2: [], 1: [] }, totalScore: 0 },
@@ -127,6 +131,23 @@
     ];
 
     const userVotes = {};
+
+    async function authenticate(){
+        const res = await fetch('/auth-voting', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        })
+
+        if(res.redirected){
+            window.location.href = res.url
+        }
+    }
 
     function createListItem(activity, userId) {
         const listItem = document.createElement('li');

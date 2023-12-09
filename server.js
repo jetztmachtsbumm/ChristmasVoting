@@ -5,14 +5,14 @@ const app = express()
 app.use(express.static('public'))
 app.use(express.json())
 
-app.post('/', async(req, res) => {
+const dataBaseFilePath = 'db/users.json'
+
+app.post('/login', async(req, res) => {
     let jsonData = req.body
     const username = jsonData['username']
     const password = jsonData['password']
 
-    const filePath = 'db/users.json'
-
-    fs.readFile(filePath, 'utf8', (err, fileData) => {
+    fs.readFile(dataBaseFilePath, 'utf8', (err, fileData) => {
         if(err){
             console.error('Error reading file:', err)
             res.status(500).send('Internal Server Error')
@@ -28,25 +28,26 @@ app.post('/', async(req, res) => {
             return
         }
 
-        jsonData = {}
-        jsonData[username] = password
-
         const dataExists = checkDataExists(existingData, jsonData)
 
         if(dataExists){
-            const correctPassword = checkPassword(jsonData['password'], existingData)
+            const correctPassword = checkPassword(username, password, existingData)
             if(correctPassword){
                 res.redirect('/voting.html')
+            }else{
+                res.status(401).send('Incorrect Password')
             }
             return
         }
 
+        jsonData = {}
+        jsonData[username] = password
         
         const updatedData = {...existingData, ...jsonData}
 
         const jsonString = JSON.stringify(updatedData, null, 2)
 
-        fs.writeFile(filePath, jsonString, 'utf8', (writeError) => {
+        fs.writeFile(dataBaseFilePath, jsonString, 'utf8', (writeError) => {
             if(writeError){
                 console.error('Error writing JSON to file:', writeError)
                 res.status(500).send('Internal Server Error')
@@ -58,12 +59,47 @@ app.post('/', async(req, res) => {
     })
 })
 
+app.post('/auth-voting', async (req, res) => {
+    let jsonData = req.body
+    const username = jsonData['username']
+    const password = jsonData['password']
+
+    fs.readFile(dataBaseFilePath, 'utf8', (err, fileData) => {
+        if(err){
+            console.error('Error reading file:', err)
+            res.status(500).send('Internal Server Error')
+            return;
+        }
+
+        let existingData;
+        try{
+            existingData = JSON.parse(fileData)
+        }catch(parseError){
+            console.error('Error parsing existing JSON:', parseError)
+            res.status(500).send('Internal Server Error')
+            return
+        }
+
+        const dataExists = checkDataExists(existingData, jsonData)
+
+        if(dataExists){
+            const correctPassword = checkPassword(username, password, existingData)
+            if(!correctPassword){
+                res.status(401).redirect('/')
+            }
+            return
+        }else{
+            res.status(401).redirect('/')
+        }
+    })
+})
+
 function checkDataExists(existingData, newData){
-    return existingData.hasOwnProperty(newData['username'])
+    return existingData[newData['username']] !== undefined
 }
 
-function checkPassword(password, fileData){
-    return fileData['username'] === password
+function checkPassword(username, password, fileData){
+    return fileData[username] === password
 }
 
 app.listen(6969)

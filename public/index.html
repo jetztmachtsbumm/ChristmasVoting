@@ -97,19 +97,7 @@
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // You can add your authentication logic here
-        // For simplicity, let's check for a hardcoded username and password
-        if (username === 'user123' && password === 'password123') {
-            // Authentication successful
-            errorMessageElement.textContent = '';
-            // Redirect to the Christmas Activity Voting page
-            window.location.href = 'voting.html';
-        } else {
-            // Authentication failed
-            errorMessageElement.textContent = 'Invalid username or password. Please try again.';
-        }
-
-        const res = await fetch('/', {
+        const res = await fetch('/login', {
             method: 'POST',
             headers: {
                 "Content-type": "application/json"
@@ -121,7 +109,11 @@
         })
 
         if(res.redirected){
+            localStorage.setItem('username', username)
+            localStorage.setItem('password', password)
             window.location.href = res.url
+        }else if(res.status == 401){
+            errorMessageElement.textContent = 'Invalid username or password. Please try again.';
         }
         return;
     });
