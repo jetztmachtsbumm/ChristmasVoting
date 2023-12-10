@@ -133,6 +133,8 @@
     authenticate()
     updateActivityList()
 
+    setInterval(async () => await updateActivityList(), 1000)
+
     async function authenticate(){
         const res = await fetch('/auth-voting', {
             method: 'POST',
@@ -182,6 +184,7 @@
             }
 
             const activityList = document.getElementById('activityList');
+            activityList.innerHTML = "";
             activities.forEach(activity => {
                 const listItem = createListItem(activity);
                 activityList.appendChild(listItem);
@@ -205,6 +208,10 @@
                 author: username
             })
         })
+
+        await updateActivityList()
+
+        newActivityInput.value = ""
     })
 </script>
 
