@@ -99,7 +99,7 @@ function checkDataExists(existingData, newData){
 }
 
 function checkPassword(username, password, fileData){
-    return fileData[username] === password
+    return username !== undefined && password !== undefined && fileData[username] === password
 }
 
 app.listen(6969)

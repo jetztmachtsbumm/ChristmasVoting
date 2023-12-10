@@ -89,14 +89,31 @@
     const loginForm = document.getElementById('loginForm');
     const errorMessageElement = document.getElementById('errorMessage');
 
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    usernameInput.value = localStorage.getItem('username')
+    passwordInput.value = localStorage.getItem('password')
+
+    let username = usernameInput.value.trim()
+    let password = passwordInput.value.trim()
+
+    if(username !== '' && password !== ''){
+        tryLogin()
+    }
+
     loginForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-        const usernameInput = document.getElementById('username');
-        const passwordInput = document.getElementById('password');
 
-        const username = usernameInput.value.trim();
-        const password = passwordInput.value.trim();
+        username = usernameInput.value.trim();
+        password = passwordInput.value.trim();
 
+        await tryLogin(username, password)
+
+        return;
+    });
+
+    async function tryLogin(){
         const res = await fetch('/login', {
             method: 'POST',
             headers: {
@@ -115,8 +132,7 @@
         }else if(res.status == 401){
             errorMessageElement.textContent = 'Invalid username or password. Please try again.';
         }
-        return;
-    });
+    }
 </script>
 
 </body>
