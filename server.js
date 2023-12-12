@@ -67,7 +67,7 @@ app.post('/auth-voting', async (req, res) => {
     const username = jsonData['username']
     const password = jsonData['password']
 
-    fs.readFile(userDataBaseFilePath, 'utf8', (err, fileData) => {
+    await fs.readFile(userDataBaseFilePath, 'utf8', (err, fileData) => {
         if(err){
             console.error('Error reading file:', err)
             res.sendStatus(500)
@@ -109,7 +109,7 @@ app.post('/submit-new-activity', async (req, res) => {
 
     activities[newActivity['id']] = newActivity
 
-    if(!writeJsonToFile(activitiesDatabaseFilePath, activities)){
+    if(!await writeJsonToFile(activitiesDatabaseFilePath, activities)){
         res.sendStatus(200)
     }else{
         res.sendStatus(500)
@@ -130,14 +130,26 @@ app.post('/try-vote', async (req, res) => {
         userVoteData = userVotes[jsonData['username']]
     }
 
+    for(const key in userVoteData){
+        if(userVoteData[key] === Number(jsonData['activityId'])){
+            return
+        }
+    }
+
+    if(userVoteData[Number(jsonData['votingScore'])] !== undefined){
+        activities[userVoteData[Number(jsonData['votingScore'])]]['votingScore'] -= Number(jsonData['votingScore']) 
+    }
+
     userVoteData[jsonData['votingScore']] = jsonData['activityId']
 
     userVotes[jsonData['username']] = userVoteData
 
     activities[jsonData['activityId']]['votingScore'] += Number(jsonData['votingScore'])
 
-    writeJsonToFile(userVotesDatabaseFilePath, userVotes)
-    writeJsonToFile(activitiesDatabaseFilePath, activities)
+    await writeJsonToFile(userVotesDatabaseFilePath, userVotes)
+    await writeJsonToFile(activitiesDatabaseFilePath, activities)
+
+    res.sendStatus(200)
 })
 
 app.get('/get-activities', async (_req, res) => {
@@ -152,8 +164,8 @@ function checkPassword(username, password, fileData){
     return username !== undefined && password !== undefined && fileData[username] === password
 }
 
-function writeJsonToFile(dataBaseFilePath, jsonData){
-    fs.writeFile(dataBaseFilePath, JSON.stringify(jsonData, null, 2), 'utf8', (writeError) => {
+async function writeJsonToFile(dataBaseFilePath, jsonData){
+    await fs.writeFile(dataBaseFilePath, JSON.stringify(jsonData, null, 2), 'utf8', (writeError) => {
         if(writeError){
             console.error('Error writing JSON to file:', writeError)
             return false
