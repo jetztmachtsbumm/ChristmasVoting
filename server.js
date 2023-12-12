@@ -7,8 +7,13 @@ app.use(express.json())
 
 const userDataBaseFilePath = 'db/users.json'
 const activitiesDatabaseFilePath = 'db/activities.json'
+const userVotesDatabaseFilePath = 'db/userVotes.json'
 
-let activities = loadActivitiesFromDatabase()
+let activities = {}
+let userVotes = {}
+
+loadActivitiesFromDatabase()
+loadUserVotesFromDatabase()
 
 app.post('/login', async(req, res) => {
     let jsonData = req.body
@@ -96,12 +101,13 @@ app.post('/submit-new-activity', async (req, res) => {
     const jsonData = req.body
 
     const newActivity = {
+        id: Object.getOwnPropertyNames(activities).length,
         description: jsonData['description'],
         author: jsonData['author'],
         votingScore: 0
     }
 
-    activities[Object.getOwnPropertyNames(activities).length] = newActivity
+    activities[newActivity['id']] = newActivity
 
     if(!writeJsonToFile(activitiesDatabaseFilePath, activities)){
         res.sendStatus(200)
@@ -110,7 +116,31 @@ app.post('/submit-new-activity', async (req, res) => {
     }
 })
 
-app.get('/get-activities', async (req, res) => {
+app.post('/try-vote', async (req, res) => {
+    const jsonData = req.body
+
+    let userVoteData;
+    if(userVotes[jsonData['username']] === undefined){
+        userVoteData = {
+            1: undefined,
+            2: undefined,
+            3: undefined
+        }
+    }else{
+        userVoteData = userVotes[jsonData['username']]
+    }
+
+    userVoteData[jsonData['votingScore']] = jsonData['activityId']
+
+    userVotes[jsonData['username']] = userVoteData
+
+    activities[jsonData['activityId']]['votingScore'] += Number(jsonData['votingScore'])
+
+    writeJsonToFile(userVotesDatabaseFilePath, userVotes)
+    writeJsonToFile(activitiesDatabaseFilePath, activities)
+})
+
+app.get('/get-activities', async (_req, res) => {
     res.status(200).json(activities)
 })
 
@@ -142,6 +172,21 @@ function loadActivitiesFromDatabase(){
     
         try{
             activities = JSON.parse(fileData)
+        }catch(parseError){
+            console.error('Error parsing existing JSON:', parseError)
+        }
+    })
+}
+
+function loadUserVotesFromDatabase(){
+    fs.readFile(userVotesDatabaseFilePath, (err, fileData) => {
+        if(err){
+            console.error('Error reading file:', err)
+            return;
+        }
+    
+        try{
+            userVotes = JSON.parse(fileData)
         }catch(parseError){
             console.error('Error parsing existing JSON:', parseError)
         }

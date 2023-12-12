@@ -133,7 +133,7 @@
     authenticate()
     updateActivityList()
 
-    setInterval(async () => await updateActivityList(), 1000)
+    setInterval(async () => await updateActivityList(), 3000)
 
     async function authenticate(){
         const res = await fetch('/auth-voting', {
@@ -158,9 +158,9 @@
             <span class="activity-text">${activity['description']}</span>
             <span class="author">von: ${activity['author']}</span>
             <span class="total-score">Total Score: ${activity['votingScore']}</span>
-            <button>3</button>
-            <button>2</button>
-            <button>1</button>
+            <button id="${activity['id']}-3">3</button>
+            <button id="${activity['id']}-2">2</button>
+            <button id="${activity['id']}-1">1</button>
         `;
         return listItem;
     }
@@ -175,6 +175,7 @@
         }).then(jsonData => {
             for(const key in jsonData){
                 const newActivity = {
+                    id: jsonData[key]['id'],
                     description: jsonData[key]['description'],
                     author: jsonData[key]['author'],
                     votingScore: jsonData[key]['votingScore']
@@ -188,6 +189,16 @@
             activities.forEach(activity => {
                 const listItem = createListItem(activity);
                 activityList.appendChild(listItem);
+
+                document.getElementById(activity['id'] + "-3").addEventListener('click', async (event) => {
+                    tryVote(activity['id'], 3)
+                })
+                document.getElementById(activity['id'] + "-2").addEventListener('click', async (event) => {
+                    tryVote(activity['id'], 2)
+                })
+                document.getElementById(activity['id'] + "-1").addEventListener('click', async (event) => {
+                    tryVote(activity['id'], 1)
+                })
             });
         })
     }
@@ -213,6 +224,20 @@
 
         newActivityInput.value = ""
     })
+
+    async function tryVote(activityId, votingScore){
+        const res = await fetch('/try-vote', {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                activityId: activityId,
+                username: username,
+                votingScore: votingScore
+            })
+        })
+    }
 </script>
 
 </body>
