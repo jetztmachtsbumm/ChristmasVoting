@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Christmas Activity Voting</title>
+    <title>Weihnachtsabstimmung</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -53,7 +53,7 @@
             list-style-type: none;
             padding: 0;
             width: 100%;
-            max-width: 400px; /* Adjust the max-width as needed */
+            max-width: 900px; /* Adjust the max-width as needed */
         }
 
         li {
@@ -67,6 +67,7 @@
             background-color: #fff; /* White background for each activity */
             transition: background-color 0.3s ease-in-out; /* Smooth background color transition */
             position: relative;
+            box-sizing: border-box;
         }
 
         li:hover {
@@ -115,12 +116,12 @@
 </head>
 <body>
 
-<h1>Christmas Activity Voting</h1>
+<h1>Weihnachtsabstimmung</h1>
 
 <form id="activityForm">
-    <label for="newActivity">New Activity:</label>
+    <label for="newActivity">Neuer Vorschlag:</label>
     <input type="text" id="newActivity" name="newActivity" required>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Vorschlag einreichen">
 </form>
 
 <ul id="activityList">
@@ -158,7 +159,7 @@
         listItem.innerHTML = `
             <span class="activity-text">${activity['description']}</span>
             <span class="author">von: ${activity['author']}</span>
-            <span class="total-score" id="${activity['id']}-votingScore">Total Score: ${activity['votingScore']}</span>
+            <span class="total-score" id="${activity['id']}-votingScore">Stimmwertung: ${activity['votingScore']}</span>
             <button id="${activity['id']}-3">3</button>
             <button id="${activity['id']}-2">2</button>
             <button id="${activity['id']}-1">1</button>
@@ -188,7 +189,7 @@
 
             activities.forEach(activity => {
                 if(document.getElementById(`activity-${activity['id']}`)){
-                    document.getElementById(`${activity['id']}-votingScore`).textContent = `Total score: ${activity['votingScore']}`
+                    document.getElementById(`${activity['id']}-votingScore`).textContent = `Stimmwertung: ${activity['votingScore']}`
                 }else{
                     const listItem = createListItem(activity);
                     activityList.appendChild(listItem);

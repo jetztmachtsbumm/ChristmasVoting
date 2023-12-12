@@ -1,26 +1,3 @@
 {
-  "0": {
-    "id": 0,
-    "description": "Test",
-    "author": "jetztmachtsbumm",
-    "votingScore": 0
-  },
-  "1": {
-    "id": 1,
-    "description": "Test1",
-    "author": "jetztmachtsbumm",
-    "votingScore": 1
-  },
-  "2": {
-    "id": 2,
-    "description": "Test3",
-    "author": "jetztmachtsbumm",
-    "votingScore": 2
-  },
-  "3": {
-    "id": 3,
-    "description": "Test4",
-    "author": "jetztmachtsbumm",
-    "votingScore": 3
-  }
+  
 }

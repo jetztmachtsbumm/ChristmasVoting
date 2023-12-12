@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Weihnachtsabstimmung-Einloggen</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -77,11 +77,11 @@
 <h1>Login Page</h1>
 
 <form id="loginForm">
-    <label for="username">Username:</label>
+    <label for="username">Benutzername:</label>
     <input type="text" id="username" name="username" required>
-    <label for="password">Password:</label>
+    <label for="password">Kennwort:</label>
     <input type="password" id="password" name="password" required>
-    <input type="submit" value="Login">
+    <input type="submit" value="Einloggen">
     <p class="error-message" id="errorMessage"></p>
 </form>
 
@@ -130,7 +130,7 @@
             localStorage.setItem('password', password)
             window.location.href = res.url
         }else if(res.status == 401){
-            errorMessageElement.textContent = 'Invalid username or password. Please try again.';
+            errorMessageElement.textContent = 'Falsches Kennwort, bitte versuche es erneut!';
         }
     }
 </script>

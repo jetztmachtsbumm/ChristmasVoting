@@ -54,8 +54,7 @@ app.post('/login', async(req, res) => {
         const updatedData = {...existingData, ...jsonData}
 
         if(writeJsonToFile(userDataBaseFilePath, updatedData)){
-            res.sendStatus(200)
-            res.redirect('/voting.html')
+            res.status(200).redirect('/voting.html')
         }else{
             res.sendStatus(500)
         }
