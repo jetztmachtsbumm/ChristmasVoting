@@ -20,7 +20,7 @@ app.post('/login', async(req, res) => {
     const username = jsonData['username']
     const password = jsonData['password']
 
-    fs.readFile(userDataBaseFilePath, 'utf8', (err, fileData) => {
+    await fs.readFile(userDataBaseFilePath, 'utf8', (err, fileData) => {
         if(err){
             console.error('Error reading file:', err)
             res.sendStatus(500)
@@ -132,6 +132,7 @@ app.post('/try-vote', async (req, res) => {
 
     for(const key in userVoteData){
         if(userVoteData[key] === Number(jsonData['activityId'])){
+            res.sendStatus(401)
             return
         }
     }
@@ -150,6 +151,12 @@ app.post('/try-vote', async (req, res) => {
     await writeJsonToFile(activitiesDatabaseFilePath, activities)
 
     res.sendStatus(200)
+})
+
+app.post('/get-votes', async (req, res) => {
+    const username = req.body['username']
+
+    res.json(userVotes[username])
 })
 
 app.get('/get-activities', async (_req, res) => {

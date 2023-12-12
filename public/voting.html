@@ -207,6 +207,30 @@
         })
     }
     
+    async function updateMyVotes(){
+        await fetch('/get-votes', {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({
+                username
+            })
+        }).then(res => {
+            return res.json()
+        }).then(jsonData => {
+            const buttons = document.querySelectorAll('button');
+
+            buttons.forEach(button => {
+                button.style.backgroundColor = '#dc143c'
+            })
+
+            for(const key in jsonData){
+                document.getElementById(`${jsonData[key]}-${key}`).style.backgroundColor = '#dcbe14'
+            }
+        })
+    }
+
     const addActivityForm = document.getElementById('activityForm')
     const newActivityInput = document.getElementById('newActivity')
 
@@ -241,6 +265,12 @@
                 votingScore: votingScore
             })
         })
+
+        if(res.ok){
+            await updateMyVotes()
+        }else{
+            alert("Du kannst nicht mehrmals für das gleiche abstimmen!")
+        }
     }
 </script>
 
